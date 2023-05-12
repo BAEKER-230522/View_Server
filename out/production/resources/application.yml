@@ -3,10 +3,3 @@ spring:
     name: config-view-dev
   config:
     import: optional:configserver:http://localhost:9900
-
----
-management:
-  endpoints:
-    web:
-      exposure:
-        include: refresh
