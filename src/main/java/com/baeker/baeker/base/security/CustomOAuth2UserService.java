@@ -1,7 +1,10 @@
 package com.baeker.baeker.base.security;
 
-import com.baeker.baeker.msaController.dto.MemberDto;
-import lombok.RequiredArgsConstructor;
+import com.baeker.baeker.base.request.RsData;
+import com.baeker.baeker.feign.MemberClient;
+import com.baeker.baeker.feign.dto.MemberJoinDto;
+import com.baeker.baeker.msaController.dto.Member;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -15,8 +18,8 @@ import java.util.Map;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+    @Autowired private MemberClient client;
 
     private String username;
     private String nickName;
@@ -35,9 +38,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             default -> username = oAuth2User.getName();
         }
 
-        // member 서버 저장 api 호출 -> MemberDto 에 값 저장
-        MemberDto member = new MemberDto(username, nickName, "", provider, email, token, profileImage);
-
+        RsData<Member> memberRs = client.join(new MemberJoinDto(username, nickName, "", provider, email, token, profileImage));
+        Member member = memberRs.getData();
         return new CustomOAuth2User(member.getUsername(), member.getPassword(), member.getGrantedAuthorities());
     }
 

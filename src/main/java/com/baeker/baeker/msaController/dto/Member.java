@@ -5,33 +5,47 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class MemberDto {
+public class Member {
 
+    private Long id;
     private String username;
     private String nickname;
-    private String password;
     private String baekJoonName;
+    private String about;
+    private String profileImg;
+    private String kakaoProfileImage;
+    private String password;
     private String provider;
     private String email;
     private String token;
-    private String profileImage;
+    private boolean newMember;
+
+    private LocalDateTime createDate;
+    private LocalDateTime modifyDate;
+
+    int bronze;
+    int sliver;
+    int gold;
+    int diamond;
+    int ruby;
+    int platinum;
 
     //-- create method --//
 
-
-    public MemberDto(String username, String nickname,String password, String provider, String email, String token, String profileImage) {
+    public Member(String username, String nickname, String password, String provider, String email, String token, String profileImage) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
         this.provider = provider;
         this.email = email;
         this.token = token;
-        this.profileImage = profileImage;
+        this.kakaoProfileImage = profileImage;
     }
 
 

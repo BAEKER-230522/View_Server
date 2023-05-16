@@ -22,7 +22,7 @@ public class HomeController {
         log.info("홈페이지 요청 확인");
 
         if (rq.isLogin())
-            log.info("로그인 성공");
+            log.info("로그인 성공 nickname = {}", rq.getMember().getNickname());
 
         return "test/login";
     }

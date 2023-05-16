@@ -1,9 +1,11 @@
 package com.baeker.baeker.base.request;
 
-import com.baeker.baeker.msaController.dto.MemberDto;
+import com.baeker.baeker.feign.MemberClient;
+import com.baeker.baeker.msaController.dto.Member;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -11,15 +13,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequestScope
 public class Rq {
+
     private final HttpServletRequest req;
     private final HttpServletResponse resp;
     private final HttpSession session;
     private final User user;
-    private MemberDto member = null; // 레이지 로딩, 처음부터 넣지 않고, 요청이 들어올 때 넣는다.
+    private Member member = null; // 레이지 로딩, 처음부터 넣지 않고, 요청이 들어올 때 넣는다.
+
+    @Autowired private MemberClient memberClient;
 
 
     public Rq(HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
@@ -55,13 +62,15 @@ public class Rq {
 
 
     // 로그인 된 회원의 객체
-    public MemberDto getMember() {
+    public Member getMember() {
         if (isLogout()) return null;
 
         // 데이터가 없는지 체크
         if (member == null) {
-            // member 서버 회원 찾는 api 요청
-            // member =
+            Map<String, Object> pram = new HashMap<>();
+            pram.put("username", user.getUsername());
+            RsData<Member> memberRs = memberClient.findByUsername(pram);
+            member = memberRs.getData();
         }
 
         return member;
