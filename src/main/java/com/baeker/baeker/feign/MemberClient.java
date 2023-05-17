@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
-@FeignClient(name = "member", url = "http://localhost:8088/member")
+@FeignClient(name = "member", url = "http://localhost:8088/api/member")
 @Qualifier
 public interface MemberClient {
 
-    @GetMapping("/get_member")
+    @GetMapping("/get/member")
     RsData<Member> findByUsername(@SpringQueryMap Map<String, Object> parm);
 
     @PostMapping("/create")
