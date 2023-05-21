@@ -1,10 +1,11 @@
 package com.baeker.baeker.base.request;
 
-import com.baeker.baeker.member.Member;
-import com.baeker.baeker.member.MemberService;
+import com.baeker.baeker.feign.MemberClient;
+import com.baeker.baeker.msaController.dto.Member;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -12,20 +13,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequestScope
 public class Rq {
-    private final MemberService memberService;
+
     private final HttpServletRequest req;
     private final HttpServletResponse resp;
     private final HttpSession session;
     private final User user;
     private Member member = null; // 레이지 로딩, 처음부터 넣지 않고, 요청이 들어올 때 넣는다.
 
+    @Autowired private MemberClient memberClient;
 
-    public Rq(MemberService memberService, HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
-        this.memberService = memberService;
+
+    public Rq(HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
         this.req = req;
         this.resp = resp;
         this.session = session;
@@ -63,7 +67,10 @@ public class Rq {
 
         // 데이터가 없는지 체크
         if (member == null) {
-            member = memberService.getMember(user.getUsername()).orElseThrow();
+            Map<String, Object> pram = new HashMap<>();
+            pram.put("username", user.getUsername());
+            RsData<Member> memberRs = memberClient.findByUsername(pram);
+            member = memberRs.getData();
         }
 
         return member;
