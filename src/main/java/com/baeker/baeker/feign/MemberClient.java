@@ -16,9 +16,9 @@ import java.util.Map;
 @Qualifier
 public interface MemberClient {
 
-    @GetMapping("/get/member")
+    @GetMapping("/get/v1/username")
     RsData<Member> findByUsername(@SpringQueryMap Map<String, Object> parm);
 
-    @PostMapping("/create")
+    @PostMapping("/v1/create")
     RsData<Member> join(@RequestBody MemberJoinDto dto);
 }
