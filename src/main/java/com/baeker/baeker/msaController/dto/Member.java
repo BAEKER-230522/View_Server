@@ -37,7 +37,6 @@ public class Member {
     int platinum;
 
     //-- create method --//
-
     public Member(String username, String nickname, String password, String provider, String email, String token, String profileImage) {
         this.username = username;
         this.nickname = nickname;
